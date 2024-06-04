@@ -47,7 +47,7 @@ java {
 jar {
     manifest {
         attributes(
-                'Main-Class': 'org.example.App'
+                'Main-Class': 'org.main.App'
         )
     }
     from {
@@ -58,7 +58,7 @@ jar {
 
 application {
     // Define the main class for the application.
-    mainClass = 'org.example.App'
+    mainClass = 'org.main.App'
 }
 
 tasks.named('test') {

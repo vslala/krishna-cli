@@ -43,18 +43,20 @@ public class CodeRunnerChatbot {
                 chatSession.addExchange(new MessageExchange(systemPrompt, codeResponse));
                 pythonContainerRunner.build(parseRequirements(codeResponse), parsePythonCode(codeResponse));
                 programOutput = pythonContainerRunner.run();
+                System.out.println("<<<<<<<<<<<PROGRAM OUTPUT START>>>>>>>>>>>>>>>>>>>>");
+                System.out.println(programOutput);
+                System.out.println("<<<<<<<<<<<PROGRAM OUTPUT END>>>>>>>>>>>>>>>>>>>>");
                 if (programOutput.startsWith("ERROR")) {
                     String errorPrompt = "";
                     do {
                         String errorMessage = programOutput.split(":")[1];
                         errorPrompt = """
-                                This is our conversation so far:
                                 %s
                                 
                                 This is the code we ran:
                                 %s
                                 
-                                This is response I got after executing the code:
+                                This is response we got after executing the code:
                                 %s
                              
                                 I want you to try and fix the code so that we can re-run it to get the desired output.
@@ -77,13 +79,14 @@ public class CodeRunnerChatbot {
                     chatSession.addExchange(new MessageExchange(errorPrompt, programOutput));
                 } else {
                     String finalResponse = classicChatbot.input(chatSession.getConversation().toPrompt("""
-                            Following is the output from the code: 
+                            Great! Code ran successfully. This is the output from the code, use this output to provide a userful response to the user's prompt:
                             ```Code Output
                             %s
                             ```
                             Make sure you use the Code Output to answer the user's prompt in natural language.
-                            User Prompt: %s
-                            """.formatted(programOutput, prompt))
+                            
+                            %s
+                            """.formatted(programOutput, chatSession.getConversation().pretty()))
                     );
                     return finalResponse;
                 }
@@ -124,21 +127,35 @@ public class CodeRunnerChatbot {
 
     private String checkIfCodeExecutionRequired(String prompt) {
         String systemPrompt = """
-                        You are an intelligent chatbot designed to assist users with their queries. 
-                        When presented with a question, evaluate whether you need to run Python code to provide the most accurate result, or if you can answer it using your own knowledge. 
-                        If running Python code will provide a better result, respond with 'Yes'. Otherwise, directly answer the query.
-                        If the user query contains a link or the user provides a link, consider creating a web page crawler script in Python, execute it, and fetch the results for the user.
-                        Useful information and tools at your disposal:
-                            - OpenWeatherMap API Key: 46ed2f214d4e499619d261f4caf99ba1
-                            
-                        When responding, please indicate if you need to run Python code by saying 'Yes'. If you do not need to run Python code, proceed with your best knowledge to answer the query directly. If a link is provided, consider developing a web page crawler script to fetch the relevant information.
-                        Before providing the Python code, always include the necessary packages in the requirements.txt format as follows:
+                        You are an intelligent assistant with the ability to execute Python code and fetch information from the web. When a user asks a question, follow these steps:
+                        
+                        1. Analyze the query to determine if you can provide a satisfactory answer using your existing knowledge base. If so, directly respond with the answer.
+                        
+                        2. If the query requires additional computation, web scraping, or API calls, respond with "Yes, I can execute Python code to assist with this query."
+                        
+                        3. If you respond with "Yes", provide the necessary code in the following format:
+                        
                         ```requirements.txt
                         <package1>
                         <package2>
-                        <package3>
+                        ...
                         ```
-                        Make sure to always provide the requirements block whenever you are providing the code block.
+                        
+                        ```python
+                        # Add your Python code here
+                        ```
+                        
+                        Note:
+                        - Exclude common Python libraries like os, sys, math, etc. from the requirements.txt, as they are already part of the Python runtime.
+                        - If the query involves fetching information from a website, consider creating a web scraper script.
+                        - If the query requires using an API, include the necessary API key(s) or authentication details in the code.
+                        - You have access to the OpenWeatherMap API Key: 46ed2f214d4e499619d261f4caf99ba1
+                        
+                        4. After providing the code, execute it and share the output or results with the user.
+                        
+                        5. If you cannot provide a satisfactory answer or code solution, politely indicate that you do not have enough information or capabilities to assist with the specific query.
+                        
+                        Let's begin! How can I assist you today?
                 """.concat(System.lineSeparator());
         String finalPrompt = systemPrompt.concat("""
                 ---------------------------

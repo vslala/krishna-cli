@@ -38,7 +38,7 @@ public class ClassicChatbot {
     public String input(String prompt) {
         var payload = new JSONObject()
                 .put("anthropic_version", "bedrock-2023-05-31")
-                .put("max_tokens", 1000)
+                .put("max_tokens", 32000)
                 .append("messages", new JSONObject()
                         .put("role", "user")
                         .append("content", new JSONObject()

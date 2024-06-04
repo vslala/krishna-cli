@@ -92,12 +92,27 @@ public class App {
         Command currCommand = Command.CONTINUE_CONVERSATION;
         do {
             System.out.print("Prompt: ");
-            String userPrompt = scan.nextLine();
-            if ("exit".equalsIgnoreCase(userPrompt)) {
+            var multiLineInput = new StringBuilder();
+            String line;
+            while (!(line = scan.nextLine()).equals("<<<submit>>>")) {
+                multiLineInput.append(line).append("\n");
+            }
+            if (multiLineInput.substring(multiLineInput.length() - 5).contains("exit")) {
                 currCommand = Command.EXIT;
+                String conversationTitle = classicChatbot.input("""
+                        %s
+                        --
+                        Provide the best suited title for the conversation so that it can be used to name the conversation.
+                        Make sure to output the title in snake case (word separated by _);
+                        
+                        OUTPUT FORMAT:
+                        - ONLY spell out the title and no other word 
+                        """.formatted(chatSession.getConversation().pretty()));
+                chatSession.updateConversationTitle(conversationTitle);
                 break;
             }
-            String conversationContext = chatSession.getConversation().toPrompt("Following is the context of our conversation so far, make use of this conversation before answering the user prompt.");
+            String userPrompt = multiLineInput.toString();
+            String conversationContext = chatSession.getConversation().toPrompt("You are an all intelligent artificial intelligence, here to support the user. The user will ask you questions, and you will provide responses");
             String response = classicChatbot.input(conversationContext + userPrompt);
             System.out.println();
             chatSession.addExchange(new MessageExchange(userPrompt, response));
@@ -119,16 +134,30 @@ public class App {
     }
 
     public static void main(String[] args) {
-//        new App();
+        System.out.println("""
+                Which chatbot would you like to use?
+                1. Good for conversation, remembers the context, maintains chat sessions
+                2. Performs tasks for you by executing python code
+                """);
+        String input = App.scan.nextLine();
+        if (input.equals("1")) {
+            new App();
+        } else {
+            var scan = new Scanner(System.in);
+            var chatbot = new CodeRunnerChatbot("anthropic.claude-3-sonnet-20240229-v1:0");
+            String userPrompt;
+            do {
+                System.out.print("\nPrompt:\t");
+                StringBuilder multiLineInput = new StringBuilder();
+                String line;
 
-        var scan = new Scanner(System.in);
-        var chatbot = new CodeRunnerChatbot("anthropic.claude-3-sonnet-20240229-v1:0");
-        String userPrompt;
-        do {
-            System.out.print("\nPrompt:\t");
-            userPrompt = scan.nextLine();
-            chatbot.input(userPrompt);
-        } while (!"exit".equals(userPrompt));
+                while (!(line = scan.nextLine()).equals("<<<submit>>>")) {
+                    multiLineInput.append(line).append("\n");
+                }
+                userPrompt = multiLineInput.toString();
+                chatbot.input(userPrompt);
+            } while (!"exit".equals(userPrompt));
+        }
     }
 
 }

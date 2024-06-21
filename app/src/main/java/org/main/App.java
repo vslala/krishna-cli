@@ -6,11 +6,16 @@ package org.main;
 import org.chatbot.ChatSessionManager;
 import org.chatbot.ClassicChatbot;
 import org.chatbot.CodeRunnerChatbot;
+import org.chatbot.commands.Krishna;
 import org.chatbot.models.ChatSession;
 import org.chatbot.models.MessageExchange;
+import picocli.CommandLine;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.bedrockruntime.BedrockRuntimeAsyncClient;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -133,31 +138,46 @@ public class App {
         };
     }
 
-    public static void main(String[] args) {
-        System.out.println("""
-                Which chatbot would you like to use?
-                1. Good for conversation, remembers the context, maintains chat sessions
-                2. Performs tasks for you by executing python code
-                """);
-        String input = App.scan.nextLine();
-        if (input.equals("1")) {
-            new App();
-        } else {
-            var scan = new Scanner(System.in);
-            var chatbot = new CodeRunnerChatbot("anthropic.claude-3-sonnet-20240229-v1:0");
-            String userPrompt;
-            do {
-                System.out.print("\nPrompt:\t");
-                StringBuilder multiLineInput = new StringBuilder();
-                String line;
+    public static void main(String[] args) throws IOException {
+        var firstTimeSetupRequired = Files.exists(Path.of("/tmp/.krishna"));
+        if (firstTimeSetupRequired) {
+            System.out.println("Setting up the environment...");
+            Path[] directoryPaths = new Path[] {
+                    Path.of("/tmp/test_containers"),
+                    Path.of("/tmp/chat_sessions"),
+                    Path.of("/tmp/.krishna")
+            };
 
-                while (!(line = scan.nextLine()).equals("<<<submit>>>")) {
-                    multiLineInput.append(line).append("\n");
-                }
-                userPrompt = multiLineInput.toString();
-                chatbot.input(userPrompt);
-            } while (!"exit".equals(userPrompt));
+            for (Path directoryPath : directoryPaths) {
+                Files.createDirectory(directoryPath);
+            }
         }
+
+        new CommandLine(new Krishna()).execute(args);
+//        System.out.println("""
+//                Which chatbot would you like to use?
+//                1. Good for conversation, remembers the context, maintains chat sessions
+//                2. Performs tasks for you by executing python code
+//                """);
+//        String input = App.scan.nextLine();
+//        if (input.equals("1")) {
+//            new App();
+//        } else {
+//            var scan = new Scanner(System.in);
+//            var chatbot = new CodeRunnerChatbot("anthropic.claude-3-sonnet-20240229-v1:0");
+//            String userPrompt;
+//            do {
+//                System.out.print("\nPrompt:\t");
+//                StringBuilder multiLineInput = new StringBuilder();
+//                String line;
+//
+//                while (!(line = scan.nextLine()).equals("<<<submit>>>")) {
+//                    multiLineInput.append(line).append("\n");
+//                }
+//                userPrompt = multiLineInput.toString();
+//                chatbot.input(userPrompt);
+//            } while (!"exit".equals(userPrompt));
+//        }
     }
 
 }

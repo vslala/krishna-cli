@@ -22,9 +22,13 @@ dependencies {
     implementation 'software.amazon.awssdk:bedrockruntime'
     implementation 'software.amazon.awssdk:sts'
     implementation 'org.json:json:20231013'
+    implementation("org.slf4j:slf4j-api:2.0.12")
+    implementation("org.slf4j:slf4j-simple:2.0.12")
+    implementation 'info.picocli:picocli:4.7.6'
 
     compileOnly 'org.projectlombok:lombok:1.18.32'
     annotationProcessor 'org.projectlombok:lombok:1.18.32'
+    annotationProcessor 'info.picocli:picocli-codegen:4.7.6'
 
     testCompileOnly 'org.projectlombok:lombok:1.18.32'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
@@ -45,6 +49,7 @@ java {
 }
 
 jar {
+    archiveBaseName="krishna"
     manifest {
         attributes(
                 'Main-Class': 'org.main.App'
@@ -59,6 +64,10 @@ jar {
 application {
     // Define the main class for the application.
     mainClass = 'org.main.App'
+}
+
+compileJava {
+    options.compilerArgs += ["-Aproject=${project.group}/${project.name}"]
 }
 
 tasks.named('test') {

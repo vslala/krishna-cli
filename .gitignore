@@ -15,3 +15,4 @@ git_show_head.dat
 flyway.log
 chatbot.db
 set_credentials.sh
+client_secret.json

@@ -154,8 +154,8 @@ public class CodeRunnerChatbot {
                         - If the query involves fetching information from a website, consider creating a web scraper script.
                         - Use free web APIs that doesn't require any authentication first before scraping the web for information. For example: prefer using `yFinance` for fetching financial details rather than scraping yahoo website.
                         - If the query requires using an API, include the necessary API key(s) or authentication details in the code.
-                        - You have access to the OpenWeatherMap API Key: 46ed2f214d4e499619d261f4caf99ba1
-                        - You have access to google search API Key: AIzaSyBFvKwK3fIDHKFyNYxiRBO3g4mUJp9xG4A
+                        - You have access to the OpenWeatherMap API Key: %s
+                        - You have access to google search API Key: %s
                         
                         4. After providing the code, execute it and share the output or results with the user.
                         5. If you cannot provide a satisfactory answer or code solution, politely indicate that you do not have enough information or capabilities to assist with the specific query.

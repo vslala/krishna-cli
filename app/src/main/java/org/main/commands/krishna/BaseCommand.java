@@ -4,6 +4,9 @@ import lombok.SneakyThrows;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 
 public interface BaseCommand extends Callable<Integer> {
@@ -24,5 +27,14 @@ public interface BaseCommand extends Callable<Integer> {
         }
 
         return sb.toString();
+    }
+
+    @SneakyThrows
+    default String loadPrompt(String resourcePath) {
+        return Files.readString(
+                Path.of(
+                        Objects.requireNonNull(
+                                BaseCommand.class.getClassLoader().getResource(resourcePath.concat("system.md"))).toURI()
+                ));
     }
 }

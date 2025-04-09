@@ -31,6 +31,7 @@ dependencies {
     implementation 'org.springframework.statemachine:spring-statemachine-core:4.0.0'
     implementation 'com.microsoft.playwright:playwright:1.51.0'
     implementation 'org.hibernate.orm:hibernate-community-dialects:6.6.5.Final'
+    implementation("com.google.apis:google-api-services-gmail:v1-rev110-1.25.0")
 
 
 
@@ -49,13 +50,10 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
     // Use JUnit Jupiter for testing.
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
-
     testImplementation 'org.mockito:mockito-core:5.15.2'
     testImplementation 'org.mockito:mockito-junit-jupiter:5.15.2'
-
-
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
+    testImplementation("org.junit-pioneer:junit-pioneer:2.3.0")
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:33.1.0-jre'
 }

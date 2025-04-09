@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS conversations (
+    id TEXT NOT NULL PRIMARY KEY,
+    title TEXT,
+    summary TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    last_modified DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS messages (
+    id TEXT NOT NULL PRIMARY KEY,
+    text TEXT NOT NULL,
+    actor TEXT NOT NULL,
+    conversation_id TEXT NOT NULL
+);

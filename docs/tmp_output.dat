@@ -1,0 +1,47 @@
+To generate the sum of all the odd numbers present in the even indices of an array, we can use the following C# code:
+
+```csharp
+using System;
+
+public class Program
+{
+    public static int SumOddNumbersEvenIndices(int[] arr)
+    {
+        int sum = 0;
+        for (int i = 0; i < arr.Length; i += 2)
+        {
+            if (arr[i] % 2 != 0)
+            {
+                sum += arr[i];
+            }
+        }
+        return sum;
+    }
+
+    public static void Main()
+    {
+        int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        int result = SumOddNumbersEvenIndices(numbers);
+        Console.WriteLine("Sum of odd numbers at even indices: " + result);
+    }
+}
+```
+
+Here's how the code works:
+
+1. The `SumOddNumbersEvenIndices` method takes an integer array `arr` as input.
+2. The `sum` variable is initialized to zero, which will store the sum of odd numbers at even indices.
+3. A `for` loop iterates through the array, starting from index 0 and incrementing by 2 in each iteration. This ensures that only even indices are processed.
+4. Inside the loop, we check if the number at the current index is odd using the modulus operator `%`. If it is odd (`arr[i] % 2 != 0`), we add it to the `sum` variable.
+5. After the loop completes, the method returns the final `sum`.
+6. In the `Main` method, we create an example array `numbers` and call the `SumOddNumbersEvenIndices` method with this array.
+7. The result is then printed to the console.
+
+For the given example array `{ 1, 2, 3, 4, 5, 6, 7, 8, 9 }`, the output will be:
+
+```
+Sum of odd numbers at even indices: 16
+```
+
+This is because the odd numbers at even indices are 1, 5, and 9, and their sum is 1 + 5 + 9 = 16.
+==========================================================

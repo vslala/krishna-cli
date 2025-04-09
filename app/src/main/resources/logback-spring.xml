@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- File appender for Flyway logs -->
+    <appender name="FLYWAY_FILE" class="ch.qos.logback.core.FileAppender">
+        <!-- The file where Flyway logs will be written -->
+        <file>flyway.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <!-- Define a console appender -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Turn off logging for everything by default -->
+    <root level="OFF">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+    <!-- Enable logging only for your application package -->
+    <logger name="org.main" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <!-- Optionally, explicitly turn off logging for some libraries -->
+    <logger name="org.springframework" level="OFF"/>
+    <logger name="org.hibernate" level="OFF"/>
+
+
+
+    <!-- Route Flyway logs to the file appender -->
+    <logger name="org.flywaydb" level="INFO" additivity="false">
+        <appender-ref ref="FLYWAY_FILE"/>
+    </logger>
+
+</configuration>
